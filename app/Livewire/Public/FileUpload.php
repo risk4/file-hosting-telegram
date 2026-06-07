@@ -33,8 +33,9 @@ class FileUpload extends Component
     protected function rules(): array
     {
         $maxMb = (int) Setting::get('max_upload_mb', 2048);
+        $maxKb = $maxMb * 1024; // Laravel validation 'max' for files uses kilobytes
         return [
-            'files.*'     => "file|max:{$maxMb}",
+            'files.*'     => "file|max:{$maxKb}",
             'noteContent' => 'required_if:activeTab,note|string|max:50000',
             'noteLabel'   => 'nullable|string|max:255',
             'category'    => 'nullable|string|max:100',
