@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply antialiased;
+    }
+
+    ::-webkit-scrollbar {
+        @apply w-1.5;
+    }
+    ::-webkit-scrollbar-track {
+        @apply bg-transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        @apply bg-gray-700 rounded-full;
+    }
+}
+
+@layer components {
+    .btn-primary {
+        @apply inline-flex items-center gap-2 px-5 py-2.5 bg-teal-500 hover:bg-teal-400 text-black font-semibold rounded-xl transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:pointer-events-none;
+    }
+    .btn-secondary {
+        @apply inline-flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 font-medium rounded-xl transition-all;
+    }
+    .input-base {
+        @apply w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-gray-100 placeholder-gray-600 focus:outline-none focus:border-teal-500 transition-colors;
+    }
+    .card {
+        @apply bg-gray-900 border border-gray-800 rounded-2xl;
+    }
+    .badge {
+        @apply text-xs font-mono px-2 py-0.5 rounded-md;
+    }
+}
+
+/* Livewire loading blur */
+[wire\:loading] {
+    opacity: 0.6;
+}
+
+/* Pagination styling */
+nav[role="navigation"] {
+    @apply flex items-center justify-between;
+}
+nav[role="navigation"] span[aria-current="page"] span {
+    @apply bg-teal-500/10 text-teal-400 border-teal-500/40;
+}
