@@ -20,7 +20,8 @@ Route::get('/', function () {
 Route::get('/browse', FileBrowser::class)->name('public.browse');
 Route::get('/upload', FileUpload::class)->name('public.upload');
 
-// File download & preview
+// File info page, download & preview
+Route::get('/file/{uuid}',         [DownloadController::class, 'show'])->name('file.show');
 Route::get('/file/{uuid}/download', [DownloadController::class, 'download'])->name('file.download');
 Route::get('/file/{uuid}/preview',  [DownloadController::class, 'preview'])->name('file.preview');
 

@@ -117,7 +117,7 @@
                                 👁
                             </button>
                             @endif
-                            <a href="{{ route('file.download', $file->uuid) }}"
+                            <a href="{{ route('file.show', $file->uuid) }}"
                                class="flex-1 py-2 text-xs font-mono rounded-lg bg-teal-500/10 text-teal-400 hover:bg-teal-500/20 transition-colors text-center">
                                 ⬇️ Unduh
                             </a>
@@ -160,7 +160,7 @@
             <div class="px-6 py-4 border-t border-gray-800 flex justify-between items-center">
                 <span class="text-xs font-mono text-gray-500">{{ $previewFile->formatted_size }}</span>
                 @if($previewFile->type !== 'note')
-                <a href="{{ route('file.download', $previewFile->uuid) }}"
+                <a href="{{ route('file.show', $previewFile->uuid) }}"
                    class="px-4 py-2 bg-teal-500 text-black text-sm font-semibold rounded-lg hover:bg-teal-400 transition-colors">
                     ⬇️ Unduh
                 </a>

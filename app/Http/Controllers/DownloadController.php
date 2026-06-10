@@ -10,6 +10,15 @@ class DownloadController extends Controller
 {
     public function __construct(private TelegramService $telegram) {}
 
+    /**
+     * Show file info page with download button
+     */
+    public function show(string $uuid)
+    {
+        $file = TeleFile::where('uuid', $uuid)->where('is_public', true)->firstOrFail();
+        return view('public.download', compact('file'));
+    }
+
     public function download(string $uuid)
     {
         $file = TeleFile::where('uuid', $uuid)->where('is_public', true)->firstOrFail();

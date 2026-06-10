@@ -93,7 +93,7 @@
                         <span class="text-{{ $file->type_color }}-400">{{ strtoupper($file->type) }}</span>
                     </div>
                 </div>
-                <a href="{{ route('file.download', $file->uuid) }}"
+                <a href="{{ route('file.show', $file->uuid) }}"
                    class="opacity-0 group-hover:opacity-100 px-3 py-1.5 text-xs font-mono rounded-lg border border-gray-700 hover:border-teal-500 hover:text-teal-400 transition-all">
                     ⬇️ Unduh
                 </a>

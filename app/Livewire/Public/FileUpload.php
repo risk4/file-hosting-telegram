@@ -150,7 +150,7 @@ class FileUpload extends Component
             $this->uploadResults[] = [
                 'name'   => $item['name'],
                 'status' => 'success',
-                'url'    => route('file.download', $teleFile->uuid),
+                'url'    => route('file.show', $teleFile->uuid),
             ];
         } catch (\Exception $e) {
             $this->uploadResults[] = [
@@ -220,7 +220,7 @@ class FileUpload extends Component
             $this->uploadResults[] = [
                 'name'   => $label,
                 'status' => 'success',
-                'url'    => route('file.download', $teleFile->uuid),
+                'url'    => route('file.show', $teleFile->uuid),
             ];
             $this->noteContent = '';
             $this->noteLabel   = '';
