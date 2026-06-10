@@ -112,15 +112,15 @@
                                     👁
                                 </button>
                                 @else
-                                <a href="{{ route('admin.file.download', $file->uuid) }}"
-                                   class="p-1.5 rounded-lg text-gray-500 hover:text-teal-400 hover:bg-teal-500/10 transition-colors" title="Download">
-                                    ⬇️
+                                <a href="{{ route('file.show', $file->uuid) }}"
+                                   class="p-1.5 rounded-lg text-gray-500 hover:text-teal-400 hover:bg-teal-500/10 transition-colors" title="Lihat halaman download">
+                                    👁
                                 </a>
                                 @endif
                                 <div x-data="{ copied: false }" class="relative">
                                     <button type="button"
-                                            x-on:click="navigator.clipboard.writeText('{{ route('file.download', $file->uuid) }}').then(() => { copied = true; setTimeout(() => copied = false, 1500) })"
-                                            class="p-1.5 rounded-lg text-gray-500 hover:text-cyan-400 hover:bg-cyan-500/10 transition-colors" title="Salin link">
+                                            x-on:click="navigator.clipboard.writeText('{{ route('file.show', $file->uuid) }}').then(() => { copied = true; setTimeout(() => copied = false, 1500) })"
+                                            class="p-1.5 rounded-lg text-gray-500 hover:text-cyan-400 hover:bg-cyan-500/10 transition-colors" title="Salin link halaman download">
                                         <span x-text="copied ? '✔️' : '🔗'"></span>
                                     </button>
                                     <div x-show="copied" x-transition class="absolute -top-7 left-1/2 -translate-x-1/2 text-xs bg-gray-900 border border-gray-700 rounded-full px-2 py-1 text-teal-300 whitespace-nowrap">
