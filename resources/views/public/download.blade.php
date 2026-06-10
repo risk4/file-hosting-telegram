@@ -1,3 +1,5 @@
+<x-layouts.public :title="$file->original_name">
+
 <div class="max-w-2xl mx-auto px-4 sm:px-6 py-12">
     <div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 space-y-6">
 
@@ -80,3 +82,5 @@
         @endif
     </div>
 </div>
+
+</x-layouts.public>
