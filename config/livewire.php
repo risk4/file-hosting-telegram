@@ -12,8 +12,7 @@ return [
 
     'temporary_file_upload' => [
         'disk' => null,
-        // Increase default max from 12288 KB (12MB) to 51200 KB (50MB)
-        'rules' => ['required', 'file', 'max:51200'],
+        'rules' => ['required', 'file'], // Size validated per upload_by max_upload_mb setting; PHP ini handles server-side limit (2G)
         'directory' => null,
         'middleware' => null,
         'preview_mimes' => [

@@ -158,7 +158,12 @@
     {{-- Upload Modal --}}
     @if($showUploadModal)
     <div class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-lg">
+        <div x-data="{ progress: 0, uploading: false }"
+             x-on:livewire-upload-start="uploading = true; progress = 0"
+             x-on:livewire-upload-progress="progress = $event.detail.progress"
+             x-on:livewire-upload-finish="progress = 100; setTimeout(() => uploading = false, 250)"
+             x-on:livewire-upload-error="uploading = false"
+             class="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-lg">
             <div class="flex items-center justify-between px-6 py-4 border-b border-gray-800">
                 <h3 class="font-semibold">☁️ Upload File</h3>
                 <button wire:click="$set('showUploadModal', false)" class="text-gray-500 hover:text-white">✕</button>
@@ -170,6 +175,18 @@
                            class="w-full text-sm font-mono text-gray-300 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-teal-500/10 file:text-teal-400 hover:file:bg-teal-500/20 cursor-pointer">
                     @error('uploadFiles.*') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
+                <template x-if="uploading">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between text-xs text-gray-400 font-mono">
+                            <span>Progres upload</span>
+                            <span x-text="Math.round(progress) + '%'">0%</span>
+                        </div>
+                        <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-teal-500 transition-all duration-200"
+                                 :style="`width: ${progress}%`"></div>
+                        </div>
+                    </div>
+                </template>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-mono text-gray-400 uppercase tracking-widest mb-2">Kategori</label>
