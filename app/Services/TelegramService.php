@@ -139,7 +139,7 @@ class TelegramService
         if (in_array($ext, ['mp4','mov','avi','mkv','webm','flv','wmv']) || str_starts_with($mime, 'video/')) {
             return 'video';
         }
-        if (in_array($ext, ['pdf','doc','docx','xls','xlsx','ppt','pptx','txt','csv','json','md','zip','rar','7z'])) {
+        if (in_array($ext, ['pdf','doc','docx','xls','xlsx','ppt','pptx','txt','csv','json','md'])) {
             return 'doc';
         }
         return 'other';
