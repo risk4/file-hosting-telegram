@@ -203,7 +203,7 @@
             </div>
             <div class="px-6 py-4 border-t border-gray-800 flex justify-end gap-3">
                 <button wire:click="$set('showUploadModal', false)" class="px-4 py-2 text-sm font-mono rounded-lg border border-gray-700 text-gray-400 hover:text-white transition-colors">Batal</button>
-                <button wire:click="uploadFiles" wire:loading.attr="disabled"
+                <button wire:click="processUploads" wire:loading.attr="disabled"
                         class="px-5 py-2 text-sm font-semibold bg-teal-500 text-black rounded-lg hover:bg-teal-400 disabled:opacity-50 transition-colors">
                     <span wire:loading.remove>Upload</span>
                     <span wire:loading>⏳ Uploading...</span>

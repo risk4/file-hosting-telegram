@@ -61,7 +61,7 @@ class FileManager extends Component
     public function updatingCategory(): void { $this->resetPage(); }
 
     // ── Upload ────────────────────────────────────────────
-    public function uploadFiles(): void
+    public function processUploads(): void
     {
         $maxMb = (int) \App\Models\Setting::get('max_upload_mb', 2048);
         $maxKb = $maxMb * 1024; // Laravel validation 'max' for files uses kilobytes
