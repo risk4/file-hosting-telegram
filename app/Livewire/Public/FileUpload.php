@@ -41,8 +41,10 @@ class FileUpload extends Component
 
     protected function rules(): array
     {
+        $maxKb = (int) Setting::get('max_upload_mb', 2048) * 1024;
+
         return [
-            'files.*'     => 'nullable', // Flysystem can't access Livewire temp files reliably
+            'files.*'     => "file|max:{$maxKb}",
             'noteContent' => 'required_if:activeTab,note|string',
             'noteLabel'   => 'nullable|string|max:255',
             'category'    => 'nullable|string|max:100',
@@ -62,6 +64,8 @@ class FileUpload extends Component
             return;
         }
 
+        $this->validate();
+
         // Move uploaded files to a persistent temp directory
         // so they survive across Livewire polling requests
         $uid = Str::random(16);
@@ -71,8 +75,10 @@ class FileUpload extends Component
 
         $queue = [];
         foreach ($this->files as $file) {
-            $origName = $file->getClientOriginalName();
-            $destPath = $fullDir . '/' . $origName;
+            $origName = $this->sanitizeOriginalName($file->getClientOriginalName());
+            $extension = pathinfo($origName, PATHINFO_EXTENSION);
+            $localName = (string) Str::uuid() . ($extension ? ".{$extension}" : '');
+            $destPath = $fullDir . DIRECTORY_SEPARATOR . $localName;
             // Use copy+unlink instead of move() — source is Livewire-managed
             // and may become unavailable before the request fully completes
             $source = $file->getRealPath();
@@ -233,6 +239,14 @@ class FileUpload extends Component
     public function clearResults(): void
     {
         $this->uploadResults = [];
+    }
+
+    private function sanitizeOriginalName(string $name): string
+    {
+        $name = basename(str_replace('\\', '/', $name));
+        $name = preg_replace('/[\x00-\x1F\x7F]+/', '', $name) ?: 'upload';
+
+        return Str::limit($name, 255, '');
     }
 
     public function render()

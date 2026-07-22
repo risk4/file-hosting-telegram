@@ -40,7 +40,7 @@ class FileBrowser extends Component
 
     public function openPreview(int $id): void
     {
-        $this->previewFile = TeleFile::find($id);
+        $this->previewFile = TeleFile::public()->find($id);
         $this->showPreview = true;
     }
 

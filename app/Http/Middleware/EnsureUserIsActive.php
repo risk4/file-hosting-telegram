@@ -4,16 +4,21 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class EnsureUserIsActive
 {
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && !Auth::user()->is_active) {
-            Auth::logout();
+        $user = $request->user();
+
+        if ($user && !$user->is_active) {
+            auth()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
             return redirect()->route('login')
-                ->withErrors(['email' => 'Akun Anda telah dinonaktifkan.']);
+                ->withErrors(['email' => 'Akun ini dinonaktifkan.']);
         }
 
         return $next($request);

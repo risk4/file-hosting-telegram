@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\TeleFile;
 use App\Services\TelegramService;
-use Illuminate\Http\Request;
 
 class DownloadController extends Controller
 {
@@ -37,11 +36,13 @@ class DownloadController extends Controller
 
             return response($response->body(), 200, [
                 'Content-Type'        => $file->mime_type ?? 'application/octet-stream',
-                'Content-Disposition' => 'attachment; filename="' . rawurlencode($file->original_name) . '"',
+                'Content-Disposition' => $this->contentDisposition('attachment', $file->original_name),
                 'Content-Length'      => strlen($response->body()),
+                'X-Content-Type-Options' => 'nosniff',
             ]);
         } catch (\Exception $e) {
-            abort(500, $e->getMessage());
+            report($e);
+            abort(500, 'Gagal mengunduh file.');
         }
     }
 
@@ -49,7 +50,7 @@ class DownloadController extends Controller
     {
         $file = TeleFile::where('uuid', $uuid)->where('is_public', true)->firstOrFail();
 
-        if (!in_array($file->type, ['image', 'doc'])) {
+        if (!$this->canPreviewInline($file)) {
             abort(404);
         }
 
@@ -61,10 +62,13 @@ class DownloadController extends Controller
 
             return response($response->body(), 200, [
                 'Content-Type'        => $file->mime_type ?? 'application/octet-stream',
-                'Content-Disposition' => 'inline; filename="' . rawurlencode($file->original_name) . '"',
+                'Content-Disposition' => $this->contentDisposition('inline', $file->original_name),
+                'X-Content-Type-Options' => 'nosniff',
+                'Content-Security-Policy' => "default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; sandbox",
             ]);
         } catch (\Exception $e) {
-            abort(500, $e->getMessage());
+            report($e);
+            abort(500, 'Gagal memuat preview file.');
         }
     }
 
@@ -81,10 +85,30 @@ class DownloadController extends Controller
 
             return response($response->body(), 200, [
                 'Content-Type'        => $file->mime_type ?? 'application/octet-stream',
-                'Content-Disposition' => 'attachment; filename="' . rawurlencode($file->original_name) . '"',
+                'Content-Disposition' => $this->contentDisposition('attachment', $file->original_name),
+                'X-Content-Type-Options' => 'nosniff',
             ]);
         } catch (\Exception $e) {
-            abort(500, $e->getMessage());
+            report($e);
+            abort(500, 'Gagal mengunduh file.');
         }
+    }
+
+    private function canPreviewInline(TeleFile $file): bool
+    {
+        $extension = strtolower(pathinfo($file->original_name, PATHINFO_EXTENSION));
+        $mime = strtolower((string) $file->mime_type);
+
+        return in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf'], true)
+            && (str_starts_with($mime, 'image/') || $mime === 'application/pdf')
+            && $mime !== 'image/svg+xml';
+    }
+
+    private function contentDisposition(string $type, string $filename): string
+    {
+        $fallback = str_replace('%', '', str_replace(['\\', '/', '"'], '_', basename($filename)));
+        $fallback = preg_replace('/[\x00-\x1F\x7F]+/', '', $fallback) ?: 'download';
+
+        return sprintf('%s; filename="%s"; filename*=UTF-8\'\'%s', $type, $fallback, rawurlencode($filename));
     }
 }

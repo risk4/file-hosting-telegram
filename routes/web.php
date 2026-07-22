@@ -51,6 +51,7 @@ Route::post('/admin/login', function (\Illuminate\Http\Request $request) {
     }
 
     auth()->login($user, $request->boolean('remember'));
+    $request->session()->regenerate();
     $user->update(['last_login_at' => now()]);
 
     return redirect()->intended(route('admin.dashboard'));
@@ -67,7 +68,7 @@ Route::post('/admin/logout', function () {
 // ADMIN ROUTES (protected)
 // ══════════════════════════════════════════════════════
 
-Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'active_user'])->group(function () {
 
     Route::get('/dashboard',  Dashboard::class)->name('dashboard');
     Route::get('/files',      FileManager::class)->name('files');

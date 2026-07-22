@@ -10,13 +10,20 @@ const express = require('express');
 const multer  = require('multer');
 const fs      = require('fs');
 const path    = require('path');
+const crypto  = require('crypto');
 
 const { TelegramClient } = require('telegram');
 const { StringSession }  = require('telegram/sessions');
 
 const app    = express();
 const PORT   = process.env.SIDECAR_PORT || 3001;
+const HOST   = process.env.SIDECAR_HOST || '127.0.0.1';
 const SECRET = process.env.SIDECAR_SECRET || '';
+
+if (!SECRET || SECRET.length < 32) {
+    console.error('SIDECAR_SECRET wajib diisi minimal 32 karakter acak. Sidecar dihentikan.');
+    process.exit(1);
+}
 
 app.use(express.json());
 
@@ -48,9 +55,14 @@ function saveSession(str) {
 
 // ── Auth middleware ─────────────────────────────────────
 function auth(req, res, next) {
-    if (SECRET && req.headers['x-sidecar-secret'] !== SECRET) {
+    const provided = String(req.headers['x-sidecar-secret'] || '');
+    const expected = Buffer.from(SECRET);
+    const actual   = Buffer.from(provided);
+
+    if (actual.length !== expected.length || !crypto.timingSafeEqual(actual, expected)) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
+
     next();
 }
 
@@ -328,8 +340,8 @@ function fmtSize(b) {
 
 // ── Start ────────────────────────────────────────────────
 autoConnect().then(() => {
-    app.listen(PORT, () => {
-        console.log(`\n🚀 TeleStore Sidecar berjalan di http://localhost:${PORT}`);
-        console.log(`🔐 Secret: ${SECRET ? '✅ Aktif' : '⚠️ Tidak ada (set SIDECAR_SECRET di .env)'}\n`);
+    app.listen(PORT, HOST, () => {
+        console.log(`\n🚀 TeleStore Sidecar berjalan di http://${HOST}:${PORT}`);
+        console.log('🔐 Secret: ✅ Aktif\n');
     });
 });
